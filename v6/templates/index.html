@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conquer Bets</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #222;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1080px;
+            margin: 40px auto;
+            background: white;
+            padding: 26px;
+            border-radius: 14px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        h1 {
+            margin-top: 0;
+            margin-bottom: 6px;
+        }
+        h2, h3 {
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #555;
+            margin-bottom: 22px;
+        }
+        form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .full-width {
+            grid-column: 1 / -1;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 12px 18px;
+            border: none;
+            border-radius: 8px;
+            background: #1f6feb;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #1558c0;
+        }
+        .error {
+            background: #fde8e8;
+            color: #9b1c1c;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+        .results {
+            margin-top: 20px;
+        }
+        .card {
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 16px;
+            background: #fafafa;
+        }
+        .meta {
+            color: #555;
+            margin-bottom: 12px;
+        }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-top: 12px;
+        }
+        .stat-box {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+        }
+        .stat-label {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+        .stat-value {
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .points-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .point-chip {
+            background: #eef2ff;
+            border: 1px solid #c7d2fe;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 14px;
+        }
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 5px;
+        }
+        .explanation, .model-insight {
+            margin-top: 12px;
+            padding: 10px;
+            border-left: 4px solid #1f6feb;
+            background: white;
+            color: #333;
+            border-radius: 4px;
+        }
+        .model-insight {
+            border-left-color: #7c3aed;
+        }
+        .helper-text {
+            color: #666;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 12px 0;
+        }
+        .comparison-box {
+            border: 1px solid #e5e7eb;
+            background: white;
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+        }
+        .comparison-label {
+            color: #666;
+            font-size: 13px;
+        }
+        .comparison-value {
+            font-weight: bold;
+            font-size: 20px;
+            margin-top: 4px;
+        }
+        .edge-badge {
+            display: inline-block;
+            margin: 8px 0 12px 0;
+            padding: 7px 11px;
+            border-radius: 999px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .edge-badge.strong {
+            background: #dcfce7;
+            color: #166534;
+        }
+        .edge-badge.moderate {
+            background: #fef9c3;
+            color: #854d0e;
+        }
+        .edge-badge.weak {
+            background: #ffedd5;
+            color: #9a3412;
+        }
+        .edge-badge.none {
+            background: #e5e7eb;
+            color: #374151;
+        }
+        .confidence-wrapper {
+            margin-top: 14px;
+            padding: 12px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+        }
+        .confidence-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .confidence-track {
+            position: relative;
+            height: 18px;
+            background: #e5e7eb;
+            border-radius: 999px;
+            margin: 20px 0 10px;
+            overflow: visible;
+        }
+        .confidence-range {
+            position: absolute;
+            top: 4px;
+            height: 10px;
+            background: #93c5fd;
+            border-radius: 999px;
+        }
+        .marker {
+            position: absolute;
+            top: -7px;
+            width: 2px;
+            height: 32px;
+            background: #111827;
+        }
+        .marker-label {
+            position: absolute;
+            top: 27px;
+            transform: translateX(-50%);
+            font-size: 11px;
+            color: #374151;
+            white-space: nowrap;
+        }
+        .marker.model {
+            background: #2563eb;
+        }
+        .marker.implied {
+            background: #dc2626;
+        }
+        .legend {
+            font-size: 12px;
+            color: #555;
+            margin-top: 28px;
+        }
+        .positive {
+            color: #166534;
+            font-weight: bold;
+        }
+        .negative {
+            color: #991b1b;
+            font-weight: bold;
+        }
+        @media (max-width: 850px) {
+            form, .analysis-grid, .summary-grid, .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+            .container {
+                margin: 20px;
+            }
+        }
+    </style>
+    <script>
+        function showLoading() {
+            const button = document.getElementById("run-button");
+            button.textContent = "Running analysis...";
+            button.disabled = true;
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Conquer Bets</h1>
+        <p class="subtitle">Enter a player, spread, and odds to compare model probability with sportsbook implied probability.</p>
+        <p style="color:red"> NOTE: Model only fetching regular season data - should not be used while in playoffs</p>
+
+        {% if error_message %}
+            <div class="error">{{ error_message }}</div>
+        {% endif %}
+
+        <form method="post" onsubmit="showLoading()">
+            <div class="full-width">
+                <label for="player">Player Name</label>
+                <input id="player" name="player" type="text" value="{{ form_values.player }}" placeholder="Luka Doncic" required>
+            </div>
+
+            <div>
+                <label for="spread">Spread</label>
+                <input id="spread" name="spread" type="text" value="{{ form_values.spread }}" placeholder="32.5" required>
+            </div>
+
+            <div>
+                <label for="odds_over">Over Odds</label>
+                <input id="odds_over" name="odds_over" type="text" value="{{ form_values.odds_over }}" placeholder="-110" required>
+            </div>
+
+            <div>
+                <label for="odds_under">Under Odds</label>
+                <input id="odds_under" name="odds_under" type="text" value="{{ form_values.odds_under }}" placeholder="-110" required>
+            </div>
+
+            <div class="full-width">
+                <button id="run-button" type="submit">Run Analysis</button>
+                <div class="helper-text">Odds must be between {{ min_odds }} and {{ max_odds }}. Analysis may take a few seconds.</div>
+            </div>
+        </form>
+
+        {% if results %}
+            <div class="results">
+                <div class="card">
+                    <h2>{{ results.player }}</h2>
+                    <div class="meta">Season: {{ results.season }} | Games: {{ results.games }} | Spread: {{ results.spread }}</div>
+
+                    <h3>Summary Statistics</h3>
+                    <div class="summary-grid">
+                        <div class="stat-box">
+                            <div class="stat-label">Average</div>
+                            <div class="stat-value">{{ '%.2f'|format(results.average_points) }}</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Median</div>
+                            <div class="stat-value">{{ '%.2f'|format(results.median_points) }}</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Min</div>
+                            <div class="stat-value">{{ results.min_points }}</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Max</div>
+                            <div class="stat-value">{{ results.max_points }}</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Std Dev</div>
+                            <div class="stat-value">{{ '%.2f'|format(results.std_dev_points) }}</div>
+                        </div>
+                    </div>
+
+                    <h3>Recent Point Totals</h3>
+                    <p class="helper-text">Showing the most recent {{ results.points_shown }} of {{ results.points_total }} games.</p>
+                    <div class="points-list">
+                        {% for point in results.recent_points %}
+                            <span class="point-chip">Game {{ loop.index }}: {{ point }} pts</span>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="analysis-grid">
+                    <div class="card">
+                        <h3>Over Analysis</h3>
+                        <span class="edge-badge {{ results.over_strength_class }}">{{ results.over_edge_strength }}</span>
+
+                        <div class="comparison-grid">
+                            <div class="comparison-box">
+                                <div class="comparison-label">Model Probability</div>
+                                <div class="comparison-value">{{ '%.2f'|format(results.p_over_pct) }}%</div>
+                            </div>
+                            <div class="comparison-box">
+                                <div class="comparison-label">Implied Probability</div>
+                                <div class="comparison-value">{{ '%.2f'|format(results.over_implied_pct) }}%</div>
+                            </div>
+                            <div class="comparison-box">
+                                <div class="comparison-label">Edge</div>
+                                <div class="comparison-value {% if results.over_edge_pct > 0 %}positive{% else %}negative{% endif %}">
+                                    {{ '%.2f'|format(results.over_edge_pct) }}%
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="confidence-wrapper">
+                            <div class="confidence-title">Confidence Range</div>
+                            <div class="confidence-track">
+                                <div class="confidence-range"
+                                     style="left: {{ results.over_confidence_bar.left }}%; width: {{ results.over_confidence_bar.width }}%;"></div>
+                                <div class="marker model" style="left: {{ results.over_confidence_bar.model_pos }}%;">
+                                    <span class="marker-label">Model</span>
+                                </div>
+                                <div class="marker implied" style="left: {{ results.over_confidence_bar.implied_pos }}%;">
+                                    <span class="marker-label">Implied</span>
+                                </div>
+                            </div>
+                            <div class="legend">
+                                CI: {{ '%.2f'|format(results.over_ci_lower_pct) }}% to {{ '%.2f'|format(results.over_ci_upper_pct) }}%.
+                                Blue marker = model probability. Red marker = implied probability.
+                            </div>
+                        </div>
+
+                        <ul>
+                            <li>Odds: {{ results.odds_over }}</li>
+                            <li>Expected Value: {{ '%.2f'|format(results.over_ev) }}%</li>
+                            <li>Kelly Bet Size: {{ '%.2f'|format(results.over_kelly_pct) }}%</li>
+                            <li>Decision: {{ results.decision_over }}</li>
+                        </ul>
+                        <div class="model-insight"><strong>Model Insight:</strong> {{ results.over_model_insight }}</div>
+                        <div class="explanation">{{ results.over_explanation }}</div>
+                    </div>
+
+                    <div class="card">
+                        <h3>Under Analysis</h3>
+                        <span class="edge-badge {{ results.under_strength_class }}">{{ results.under_edge_strength }}</span>
+
+                        <div class="comparison-grid">
+                            <div class="comparison-box">
+                                <div class="comparison-label">Model Probability</div>
+                                <div class="comparison-value">{{ '%.2f'|format(results.p_under_pct) }}%</div>
+                            </div>
+                            <div class="comparison-box">
+                                <div class="comparison-label">Implied Probability</div>
+                                <div class="comparison-value">{{ '%.2f'|format(results.under_implied_pct) }}%</div>
+                            </div>
+                            <div class="comparison-box">
+                                <div class="comparison-label">Edge</div>
+                                <div class="comparison-value {% if results.under_edge_pct > 0 %}positive{% else %}negative{% endif %}">
+                                    {{ '%.2f'|format(results.under_edge_pct) }}%
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="confidence-wrapper">
+                            <div class="confidence-title">Confidence Range</div>
+                            <div class="confidence-track">
+                                <div class="confidence-range"
+                                     style="left: {{ results.under_confidence_bar.left }}%; width: {{ results.under_confidence_bar.width }}%;"></div>
+                                <div class="marker model" style="left: {{ results.under_confidence_bar.model_pos }}%;">
+                                    <span class="marker-label">Model</span>
+                                </div>
+                                <div class="marker implied" style="left: {{ results.under_confidence_bar.implied_pos }}%;">
+                                    <span class="marker-label">Implied</span>
+                                </div>
+                            </div>
+                            <div class="legend">
+                                CI: {{ '%.2f'|format(results.under_ci_lower_pct) }}% to {{ '%.2f'|format(results.under_ci_upper_pct) }}%.
+                                Blue marker = model probability. Red marker = implied probability.
+                            </div>
+                        </div>
+
+                        <ul>
+                            <li>Odds: {{ results.odds_under }}</li>
+                            <li>Expected Value: {{ '%.2f'|format(results.under_ev) }}%</li>
+                            <li>Kelly Bet Size: {{ '%.2f'|format(results.under_kelly_pct) }}%</li>
+                            <li>Decision: {{ results.decision_under }}</li>
+                        </ul>
+                        <div class="model-insight"><strong>Model Insight:</strong> {{ results.under_model_insight }}</div>
+                        <div class="explanation">{{ results.under_explanation }}</div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
